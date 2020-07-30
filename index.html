@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stopwatch</title>
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="icon" href="img/favicon.ico">
+</head>
+<body>
+    <div id="wrapper">
+        <header class="header"><h1 class="title">Stop Watch</h1></header>
+        <div class="clock">
+            <img src="img/clock.png" alt="時計">
+            <div id="min_hand_move" class="min_hand"></div>
+            <div id="sec_hand_move" class="sec_hand"></div>
+        </div>
+        <div id="timer" class="timer_status">00:00:00</div>
+        <div class="button_parent_status">
+            <button onclick="status_change()" id="start_btn" class="button_child_status">START</button>
+            <button onclick="stop()" class="button_child_status">STOP</button>
+            <button onclick="reset()" class="button_child_status">RESET</button>
+        </div>
+    </div>
+<script>
+    'use strict';
+
+    let time = 0;                                       // カウント
+    let status = 0;                                     // 1:ON 0:OFF
+    let s_btn = document.getElementById('start_btn');   // ボタンの非表示切替
+    let min_deg = 0;                                    // 分針の傾斜
+    let sec_deg = 0;                                    // 秒針の傾斜
+
+    // スタート_ステータス切替
+    function status_change(){
+        status = 1;
+        s_btn.disabled = true;
+
+        start();
+    }
+
+    // スタート
+    function start(){
+        if(status == 1){
+            setTimeout(countdown, 10);
+        }
+    }
+
+    // カウントダウン
+    function countdown(){
+        time ++;
+
+        const min = Math.floor(time/100/60);
+        const sec = Math.floor(time/100) % 60;
+        const minsec = time % 100;
+
+        min_deg = 6 * min;
+        sec_deg = 6 * sec;
+
+        document.getElementById('timer').textContent = `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}:${String(minsec).padStart(2, '0')}`;
+        document.getElementById('min_hand_move').style.transform = `translate(-50%, -100%) rotate(${min_deg}deg)`;
+        document.getElementById('sec_hand_move').style.transform = `translate(-50%, -100%) rotate(${sec_deg}deg)`;
+
+        if(min >= 60){
+            reset();
+        } else {
+            start();
+        }
+    }
+
+    // ストップ
+    function stop(){
+        status = 0;
+        s_btn.disabled = false;
+    }
+
+    // リセット
+    function reset(){
+        status = 0;
+        time = -1;
+        s_btn.disabled = false;
+
+        document.getElementById('timer').textContent = '00:00:00';
+        document.getElementById('min_hand_move').style.transform = `translate(-50%, -100%)`;
+        document.getElementById('sec_hand_move').style.transform = `translate(-50%, -100%)`;
+    }
+
+</script>
+</body>
+</html>
